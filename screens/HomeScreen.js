@@ -10,11 +10,33 @@ import {
 } from 'react-native';
 
 export default class HomeScreen extends React.Component {
+  // create a playerClass that defaults everything
+  state =  {
+    players: [
+      {
+        name: 'player1',
+        numberOfPoints: 0,
+      },
+      {
+        name: 'player2',
+        numberOfPoints: 0,
+      },
+      {
+        name: 'player3',
+        numberOfPoints: 0,
+      },
+    ]
+  };
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <Text>Spot Light</Text>
+          {this.state.players.map((player, i) => {
+            return <Text key={i}>{player.name}</Text>
+          })}
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('GameView')}>
+            <Text>Start</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );

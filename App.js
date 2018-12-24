@@ -2,6 +2,16 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
+import { Constants } from 'expo'
+
+// TODO: move to its own file
+function SpotLightStatusBar ({backgroundColor, ...props}) {
+  return (
+    <View style={{ backgroundColor, height: Constants.statusBarHeight }}>
+      <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+    </View>
+  )
+}
 
 export default class App extends React.Component {
   state = {
@@ -20,7 +30,7 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+          <SpotLightStatusBar backgroundColor={'#292477'} barStyle="light-content" />
           <AppNavigator />
         </View>
       );
