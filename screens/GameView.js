@@ -2,38 +2,8 @@ import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Header from '../components/Header';
 import Card from '../components/Card';
-
-// TODO: remove from this file
-function shuffle (array) {
-  let length = 0
-    , index = 0
-    , temp = null
-
-  for (length = array.length - 1; length > 0; length -= 1) {
-    index = Math.floor(Math.random() * (length + 1));
-    temp = array[length];
-    array[length] = array[index];
-    array[index] = temp;
-  }
-  return array;
-}
-function deck(){
-  const names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-  const suits = ['Hearts','Diamonds','Spades','Clubs'];
-  var cards = [];
-
-  for( var s = 0; s < suits.length; s++ ) {
-    for( var n = 0; n < names.length; n++ ) {
-      cards.push({
-        value: n + 1,
-        name: names[n],
-        suit: suits[s]
-      });
-    }
-  }
-
-  return cards;
-}
+import shuffle from '../helpers/shuffle';
+import deck from '../helpers/deck';
 
 export default class GameView extends React.Component {
   state = {
@@ -47,13 +17,15 @@ export default class GameView extends React.Component {
   };
   handleHigherLowerSelect = (option) => {
     const { isSpotLight, multiplier, currentCard, nextCard } = this.state;
-    // if isSpotLight
-    //  current === previous -> go to next player
-    //  current !== previous ->
-    //    isSpotLight === true -> game over for player
-    //    isSpotLight !== true -> change isSpotLight=true, same player, go NextCard
     console.log('current/next', currentCard.value, nextCard.value);
     console.log('option', this.isHigherOrLower(option));
+    if (this.isHigherOrLower(option)) {
+      alert('Correct!');
+    } else {
+      alert('Wrong!');
+    }
+    // go to next card
+    // go to next player
   };
   isHigherOrLower = (option) => {
     const { currentCard, nextCard } = this.state;
@@ -107,4 +79,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
-
