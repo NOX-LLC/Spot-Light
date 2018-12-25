@@ -34,7 +34,9 @@ export default class HomeScreen extends React.Component {
           {this.state.players.map((player, i) => {
             return <Text key={i}>{player.name}</Text>
           })}
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('GameView')}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('GameView', {
+            players: this.state.players
+          })}>
             <Text>Start</Text>
           </TouchableOpacity>
         </ScrollView>
