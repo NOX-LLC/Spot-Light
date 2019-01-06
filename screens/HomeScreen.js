@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Colors from '../constants/Colors';
 
 export default class HomeScreen extends React.Component {
   state =  {
@@ -27,14 +28,21 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.headerTitle}>Spot-Light</Text>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           {this.state.players.map((player, i) => {
-            return <Text key={i}>{player.name}</Text>
+            return (
+              <Text key={i} style={styles.playerName}>
+                {player.name}
+              </Text>
+            );
           })}
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('GameView', {
-            players: this.state.players
-          })}>
-            <Text>Start</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('GameView', {
+              players: this.state.players
+            })}
+          >
+            <Text style={styles.startBtn}>Start</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -45,9 +53,27 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.gameBackgroundColor,
   },
   contentContainer: {
     paddingTop: 30,
+  },
+  headerTitle: {
+    fontFamily: 'space-mono',
+    color: Colors.orange,
+    fontSize: 35,
+    textAlign: 'center',
+  },
+  playerName: {
+    color: Colors.white,
+    fontSize: 35,
+    textAlign: 'center',
+    fontFamily: 'space-mono',
+  },
+  startBtn: {
+    fontFamily: 'space-mono',
+    color: Colors.yellow,
+    fontSize: 35,
+    textAlign: 'center',
   },
 });

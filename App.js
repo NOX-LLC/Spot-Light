@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import SpotLightStatusBar from './components/global/SpotLightStatusBar'
+import Colors from './constants/Colors';
 
 export default class App extends React.Component {
   state = {
@@ -21,7 +22,7 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          <SpotLightStatusBar backgroundColor={'#292477'} barStyle="light-content" />
+          <SpotLightStatusBar backgroundColor={Colors.gameBackgroundColor} barStyle="light-content" />
           <AppNavigator />
         </View>
       );

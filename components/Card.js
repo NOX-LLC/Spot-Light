@@ -6,6 +6,8 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import Colors from '../constants/Colors';
+import SuitAndNumber from './SuitAndNumber';
 
 export default class Card extends React.Component {
   render() {
@@ -20,17 +22,20 @@ export default class Card extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.cardContainer}>
-          <TouchableOpacity onPress={handleHigherLowerSelect.bind({}, 'higher')}>
-            <View>
-              <Text>{`${currentCard.suit} ${currentCard.value}`}</Text>
-              <Text>HIGHER</Text>
-            </View>
+          <TouchableOpacity
+            onPress={handleHigherLowerSelect.bind({}, 'higher')}
+            style={styles.btnContainer}
+          >
+            <SuitAndNumber style={{ left: 0, top: 0 }} currentCard={currentCard} />
+            <Text style={styles.higherLowerText}>HIGHER</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleHigherLowerSelect.bind({}, 'lower')}>
-            <View>
-              <Text>LOWER</Text>
-              <Text>{`${currentCard.suit} ${currentCard.value}`}</Text>
-            </View>
+          <View style={styles.borderBottom} />
+          <TouchableOpacity
+            onPress={handleHigherLowerSelect.bind({}, 'lower')}
+            style={styles.btnContainer}
+          >
+            <Text style={styles.higherLowerText}>LOWER</Text>
+            <SuitAndNumber style={{ right: 0, bottom: 0 }} currentCard={currentCard} reverse={true} />
           </TouchableOpacity>
         </View>
       </View>
@@ -40,11 +45,11 @@ export default class Card extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 10,
-    backgroundColor: '#fff',
+    flex: 9,
+    backgroundColor: Colors.white,
   },
   cardContainer: {
-    backgroundColor: '#ffffff',
+    flex: 1,
     borderRadius: Platform.OS === 'ios' ? 16 : 2,
     padding: 20,
     marginLeft: 10,
@@ -54,9 +59,24 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     shadowOpacity: 0.8,
     shadowColor: 'rgba(0, 0, 0, 0.24)',
+    backgroundColor: Colors.gameBackgroundColor,
     shadowOffset: {
       width: 0,
       height: 3
     },
+  },
+  btnContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  higherLowerText: {
+    fontFamily: 'space-mono',
+    color: Colors.lightGreen,
+    fontSize: 90,
+  },
+  borderBottom: {
+    borderBottomColor: '#bbb',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
 });
