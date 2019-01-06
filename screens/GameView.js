@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import Header from '../components/Header';
 import Card from '../components/Card';
+import Colors from '../constants/Colors';
 import shuffle from '../helpers/shuffle';
 import deck from '../helpers/deck';
 
@@ -33,7 +34,7 @@ export default class GameView extends React.Component {
   }
   handleHigherLowerSelect = (option) => {
     const { currentCard, nextCard } = this.state;
-    if (this.isHigherOrLower(option)) {
+    if (this.isOptionCorrect(option)) {
       console.log(`Correct: ${nextCard.value} is ${option} then ${currentCard.value}`);
       // alert(`Correct: ${nextCard.value} is ${option} then ${currentCard.value}`);
     } else {
@@ -85,7 +86,7 @@ export default class GameView extends React.Component {
       };
     });
   };
-  isHigherOrLower = (option) => {
+  isOptionCorrect = (option) => {
     const { currentCard, nextCard } = this.state;
     if (option === 'higher') {
       if (currentCard.value < nextCard.value) return true;
@@ -109,6 +110,7 @@ export default class GameView extends React.Component {
           handleHigherLowerSelect={this.handleHigherLowerSelect}
           currentCard={currentCard}
         />
+        <Text style={{ flex: 2 }}>Empty view for button</Text>
       </View>
     );
   }
@@ -117,6 +119,6 @@ export default class GameView extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
   },
 });
