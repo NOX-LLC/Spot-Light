@@ -1,9 +1,15 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import reducer from './reducers';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import middleware from './middleware';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import SpotLightStatusBar from './components/global/SpotLightStatusBar'
 import Colors from './constants/Colors';
+
+const store = createStore(reducer, middleware);
 
 export default class App extends React.Component {
   state = {
@@ -21,10 +27,12 @@ export default class App extends React.Component {
       );
     } else {
       return (
-        <View style={styles.container}>
-          <SpotLightStatusBar backgroundColor={Colors.gameBackgroundColor} barStyle="light-content" />
-          <AppNavigator />
-        </View>
+        <Provider store={store}>
+          <View style={styles.container}>
+            <SpotLightStatusBar backgroundColor={Colors.gameBackgroundColor} barStyle="light-content" />
+            <AppNavigator />
+          </View>
+        </Provider>
       );
     }
   }

@@ -10,59 +10,22 @@ import {
 } from 'react-native';
 import { Entypo } from '@expo/vector-icons'
 import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
 import Colors from '../constants/Colors';
+import { addPlayer, updatePlayerName } from '../actions/players';
 
 class PlayerInputs extends React.Component {
-  state =  {
-    players: [
-      {
-        name: 'player1',
-        numberOfPoints: 0,
-      },
-      {
-        name: 'player2',
-        numberOfPoints: 0,
-      },
-      {
-        name: 'player3',
-        numberOfPoints: 0,
-      },
-    ]
-  };
   handleChange = (name, index) => {
-    this.setState((prevState) => {
-      return {
-        players: prevState.players.map((player, i) => {
-          if (i !== index) {
-            return player;
-          }
-          return {
-            ...player,
-            name,
-          };
-        })
-      };
-    });
+    this.props.dispatch(updatePlayerName(name, index));
   };
-  addPlayer = () => {
-    this.setState((prevState) => {
-      const playersLength = prevState.players.length;
-      return {
-        players: [
-          ...prevState.players,
-          {
-            name: `player${playersLength + 1}`,
-            numberOfPoints: 0,
-          },
-        ],
-      };
-    });
+  handlePress = () => {
+    this.props.dispatch(addPlayer());
   };
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          {this.state.players.map((player, i) => {
+          {this.props.players.map((player, i) => {
             return (
               <TextInput
                 key={i}
@@ -73,7 +36,7 @@ class PlayerInputs extends React.Component {
             );
           })}
           <TouchableOpacity
-            onPress={this.addPlayer}
+            onPress={this.handlePress}
           >
             <Entypo
               style={styles.addBtn}
@@ -84,7 +47,7 @@ class PlayerInputs extends React.Component {
         </ScrollView>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('GameView', {
-            players: this.state.players
+            players: this.props.players
           })}
         >
           <Text style={styles.startBtn}>Start</Text>
@@ -94,7 +57,13 @@ class PlayerInputs extends React.Component {
   }
 }
 
-export default withNavigation(PlayerInputs);
+function mapStateToProps(state) {
+  return {
+    players: state.playersReducer.players
+  };
+}
+
+export default withNavigation(connect(mapStateToProps)(PlayerInputs));
 
 const styles = StyleSheet.create({
   container: {
