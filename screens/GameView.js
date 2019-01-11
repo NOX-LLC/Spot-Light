@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
+import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import Colors from '../constants/Colors';
 import shuffle from '../helpers/shuffle';
 import deck from '../helpers/deck';
 
-export default class GameView extends React.Component {
+class GameView extends React.Component {
   state = {
     isSpotLight: false,
     multiplier: 0,
@@ -115,6 +116,14 @@ export default class GameView extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    players: state.playersReducer.players
+  };
+}
+
+export default connect(mapStateToProps)(GameView);
 
 const styles = StyleSheet.create({
   container: {
