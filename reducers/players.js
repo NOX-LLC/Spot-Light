@@ -1,4 +1,9 @@
-import { ADD_PLAYER, UPDATE_PLAYER_NAME } from '../actions/players';
+import {
+  ADD_PLAYER,
+  UPDATE_PLAYER_NAME,
+  INCREMENT_PLAYER_INDEX,
+  UPDATE_CURRENT_PLAYER_INDEX
+} from '../actions/players';
 
 export default function playersReducer (state = {
   players: [
@@ -15,6 +20,7 @@ export default function playersReducer (state = {
       numberOfPoints: 0,
     },
   ],
+  currentPlayerIndex: 0,
 }, action) {
   switch (action.type) {
     case ADD_PLAYER : {
@@ -42,6 +48,16 @@ export default function playersReducer (state = {
             name: action.data.name,
           };
         })
+      };
+    case INCREMENT_PLAYER_INDEX :
+      return {
+        ...state,
+        currentPlayerIndex: state.currentPlayerIndex + 1,
+      };
+    case UPDATE_CURRENT_PLAYER_INDEX :
+      return {
+        ...state,
+        currentPlayerIndex: action.newIndex,
       };
     default:
       return state;

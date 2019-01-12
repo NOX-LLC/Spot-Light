@@ -46,9 +46,7 @@ class PlayerInputs extends React.Component {
           </TouchableOpacity>
         </ScrollView>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('GameView', {
-            players: this.props.players
-          })}
+          onPress={() => this.props.navigation.navigate('GameView')}
         >
           <Text style={styles.startBtn}>Start</Text>
         </TouchableOpacity>

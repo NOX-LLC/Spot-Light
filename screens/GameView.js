@@ -4,91 +4,50 @@ import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import Colors from '../constants/Colors';
-import shuffle from '../helpers/shuffle';
-import deck from '../helpers/deck';
+import {
+  incrementCardIndex,
+  resetCards,
+  updateIsEndOfDeck,
+} from '../actions/cards';
+import { incrementPlayerIndex, updatePlayerIndex } from '../actions/players';
 
 class GameView extends React.Component {
-  state = {
-    isSpotLight: false,
-    multiplier: 0,
-    currentPlayerIndex: 0,
-    cardsAlreadyUsed: [],
-    currentCard: null,
-    nextCard: null,
-    deckOfCards: [],
-  };
-  componentDidMount() {
-    const deckOfCards = deck();
-
-    this.setState(() => {
-      const currentCard = shuffle(deckOfCards).pop();
-      const nextCard = deckOfCards[0];
-      const cardsAlreadyUsed = [currentCard];
-
-      return {
-        currentCard,
-        deckOfCards,
-        cardsAlreadyUsed,
-        nextCard,
-      };
-    });
-  }
   handleHigherLowerSelect = (option) => {
-    const { currentCard, nextCard } = this.state;
-    if (this.isOptionCorrect(option)) {
-      console.log(`Correct: ${nextCard.value} is ${option} then ${currentCard.value}`);
-      // alert(`Correct: ${nextCard.value} is ${option} then ${currentCard.value}`);
+    const { cards, currentCardIndex, dispatch } = this.props;
+    const currentCard = cards[currentCardIndex];
+    const nextCard = cards[currentCardIndex + 1];
+
+    if (currentCardIndex < 51) {
+      if (this.isOptionCorrect(option)) {
+        console.log(`Correct: ${nextCard.value} is ${option} then ${currentCard.value}`);
+      } else {
+        console.log(`Incorrect: ${nextCard.value} is NOT ${option} then ${currentCard.value}`);
+      }
+      this.goToNextCard();
+      this.goToNextPlayer();
     } else {
-      console.log(`Incorrect: ${nextCard.value} is NOT ${option} then ${currentCard.value}`);
-      // alert(`Incorrect: ${nextCard.value} is NOT ${option} then ${currentCard.value}`);
+      dispatch(updateIsEndOfDeck(true));
+      this.goToNextPlayer();
+      dispatch(resetCards());
     }
-    this.goToNextCard();
-    this.goToNextPlayer()
   };
   goToNextPlayer = () => {
-    const { currentPlayerIndex } = this.state;
-    const { players } = this.props.navigation.state.params;
+    const { dispatch, currentPlayerIndex, players } = this.props;
 
     if (currentPlayerIndex + 1 < players.length) {
-      this.setState((prevState) => {
-        return { currentPlayerIndex: prevState.currentPlayerIndex + 1 };
-      })
+      dispatch(incrementPlayerIndex());
     } else {
-      this.setState(() => {
-        return { currentPlayerIndex: 0 };
-      })
+      dispatch(updatePlayerIndex(0))
     }
   };
   goToNextCard = () => {
-    const { deckOfCards, cardsAlreadyUsed } = this.state;
-
-    this.setState(() => {
-      const newCurrentCard = deckOfCards[0];
-      const newNextCard = deckOfCards[1];
-
-      // remove first card from deck and add it to the cardsAlreadyUsed pile
-      let newDeckOfCards = deckOfCards.filter((item, i) => i !== 0);
-      let newCardsAlreadyUsed = cardsAlreadyUsed.concat(newCurrentCard);
-
-      // re-shuffle cardsAlreadyUsed back into deck
-      if (newDeckOfCards.length === 1) {
-        const tempNewDeck = shuffle(cardsAlreadyUsed);
-        // add the last card back into the deck
-        tempNewDeck.concat(newDeckOfCards[0]);
-        newDeckOfCards = tempNewDeck;
-        // add current and next cards into cards already in use
-        newCardsAlreadyUsed = [newCurrentCard, newNextCard];
-      }
-      return {
-        currentCard: newCurrentCard,
-        nextCard: newNextCard,
-        deckOfCards: newDeckOfCards,
-        cardsAlreadyUsed: newCardsAlreadyUsed,
-      };
-    });
+    this.props.dispatch(incrementCardIndex());
   };
   isOptionCorrect = (option) => {
-    const { currentCard, nextCard } = this.state;
+    const { cards, currentCardIndex } = this.props;
+    const currentCard = cards[currentCardIndex];
+    const nextCard = cards[currentCardIndex + 1];
+
     if (option === 'higher') {
       if (currentCard.value < nextCard.value) return true;
     } else { // option === 'lower'
@@ -98,18 +57,15 @@ class GameView extends React.Component {
   };
 
   render() {
-    const { isSpotLight, multiplier, currentPlayerIndex, currentCard } = this.state;
-    const { players } = this.props.navigation.state.params;
+    const { cards, currentCardIndex, currentPlayerIndex, players } = this.props;
     return (
       <View style={styles.container}>
         <Header
           playerName={players[currentPlayerIndex].name}
-          isSpotLight={isSpotLight}
-          multiplie={multiplier}
         />
         <Card
           handleHigherLowerSelect={this.handleHigherLowerSelect}
-          currentCard={currentCard}
+          currentCard={cards[currentCardIndex]}
         />
         <Text style={{ flex: 2 }}>Empty view for button</Text>
       </View>
@@ -118,8 +74,15 @@ class GameView extends React.Component {
 }
 
 function mapStateToProps(state) {
+  const { cards, currentCardIndex } = state.cardsReducer;
+  const { currentPlayerIndex, players } = state.playersReducer;
+  const currentCard = cards[currentCardIndex];
   return {
-    players: state.playersReducer.players
+    cards,
+    currentCardIndex,
+    currentCard,
+    currentPlayerIndex,
+    players,
   };
 }
 
