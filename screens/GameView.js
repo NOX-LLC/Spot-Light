@@ -4,28 +4,31 @@ import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import Colors from '../constants/Colors';
+import ActionCard from '../components/ActionCard';
+import cardKeyValue from '../helpers/cardKeyValue';
 import {
   incrementCardIndex,
   resetCards,
   updateIsEndOfDeck,
+  updateDisplayActionCard,
 } from '../actions/cards';
 import { incrementPlayerIndex, updatePlayerIndex } from '../actions/players';
 
 class GameView extends React.Component {
+  state = {
+    option: '',
+  };
   handleHigherLowerSelect = (option) => {
-    const { cards, currentCardIndex, dispatch } = this.props;
-    const currentCard = cards[currentCardIndex];
-    const nextCard = cards[currentCardIndex + 1];
+    const { currentCardIndex, dispatch } = this.props;
 
     if (currentCardIndex < 51) {
-      if (this.isOptionCorrect(option)) {
-        console.log(`Correct: ${nextCard.value} is ${option} then ${currentCard.value}`);
-      } else {
-        console.log(`Incorrect: ${nextCard.value} is NOT ${option} then ${currentCard.value}`);
+      if (!this.isOptionCorrect(option)) {
+        this.setState({ option });
+        dispatch(updateDisplayActionCard(true));
       }
       this.goToNextCard();
       this.goToNextPlayer();
-    } else {
+    } else { // end of the deck
       dispatch(updateIsEndOfDeck(true));
       this.goToNextPlayer();
       dispatch(resetCards());
@@ -57,7 +60,43 @@ class GameView extends React.Component {
   };
 
   render() {
-    const { cards, currentCardIndex, currentPlayerIndex, players } = this.props;
+    const {
+      cards,
+      currentCardIndex,
+      currentPlayerIndex,
+      players,
+      isEndOfDeck,
+      displayActionCard,
+    } = this.props;
+
+    if (displayActionCard) {
+      const lastPlayer = players[
+        currentPlayerIndex === 0 ? players.length - 1 : currentPlayerIndex -1
+      ].name;
+      const lastCardValue = cards[currentCardIndex - 1].value;
+      const currentCard = cards[currentCardIndex].value;
+      const option = this.state.option;
+
+      return (
+        <ActionCard
+          text={`${cardKeyValue({ value: currentCard })} was not ${option} then ${cardKeyValue({ value: lastCardValue })}. ${lastPlayer} take ${lastCardValue} drinks!`}
+          handlePress={() => {
+            this.props.dispatch(updateDisplayActionCard(false));
+          }}
+        />
+      );
+    }
+    if (isEndOfDeck) {
+      return (
+        <ActionCard
+          text="Everyone Drinks!"
+          handlePress={() => {
+            this.props.dispatch(updateIsEndOfDeck(false));
+          }}
+        />
+      );
+    }
+
     return (
       <View style={styles.container}>
         <Header
@@ -74,7 +113,7 @@ class GameView extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { cards, currentCardIndex } = state.cardsReducer;
+  const { cards, currentCardIndex, isEndOfDeck, displayActionCard } = state.cardsReducer;
   const { currentPlayerIndex, players } = state.playersReducer;
   const currentCard = cards[currentCardIndex];
   return {
@@ -83,6 +122,8 @@ function mapStateToProps(state) {
     currentCard,
     currentPlayerIndex,
     players,
+    isEndOfDeck,
+    displayActionCard,
   };
 }
 

@@ -1,30 +1,8 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
+import cardKeyValue from '../helpers/cardKeyValue';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
-const ACE = 1;
-const JACK = 11;
-const QUEEN = 12;
-const KING = 13;
-
-handleSpecialChar = ({ value }) => {
-  let character = value;
-  if (value === ACE) {
-    character = 'A';
-  } else if (value === JACK) {
-    character = 'J';
-  } else if (value === QUEEN) {
-    character = 'Q';
-  } else if (value === KING) {
-    character = 'K';
-  }
-  return (
-    <Text style={[styles.suitAndNumber, styles.text]}>
-      {character}
-    </Text>
-  );
-};
 
 handleSuit = ({ suit }) => {
   let name = '';
@@ -55,7 +33,9 @@ export default SuitAndNumber = ({
   return (
     <View style={[styles.container, style]}>
       {reverse ? handleSuit({ suit: currentCard.suit }) : null}
-      {handleSpecialChar({ value: currentCard.value })}
+      <Text style={[styles.suitAndNumber, styles.text]}>
+        {cardKeyValue({ value: currentCard.value })}
+      </Text>
       {reverse ? null : handleSuit({ suit: currentCard.suit })}
     </View>
   );
