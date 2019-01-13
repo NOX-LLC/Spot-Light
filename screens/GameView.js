@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import Colors from '../constants/Colors';
+import ActionCard from '../components/ActionCard';
 import {
   incrementCardIndex,
   resetCards,
@@ -57,7 +58,19 @@ class GameView extends React.Component {
   };
 
   render() {
-    const { cards, currentCardIndex, currentPlayerIndex, players } = this.props;
+    const { cards, currentCardIndex, currentPlayerIndex, players, isEndOfDeck } = this.props;
+
+    if (isEndOfDeck) {
+      return (
+        <ActionCard
+          text="Everyone Drinks!"
+          handlePress={() => {
+            this.props.dispatch(updateIsEndOfDeck(false));
+          }}
+        />
+      );
+    }
+
     return (
       <View style={styles.container}>
         <Header
@@ -74,7 +87,7 @@ class GameView extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { cards, currentCardIndex } = state.cardsReducer;
+  const { cards, currentCardIndex, isEndOfDeck } = state.cardsReducer;
   const { currentPlayerIndex, players } = state.playersReducer;
   const currentCard = cards[currentCardIndex];
   return {
@@ -83,6 +96,7 @@ function mapStateToProps(state) {
     currentCard,
     currentPlayerIndex,
     players,
+    isEndOfDeck
   };
 }
 
