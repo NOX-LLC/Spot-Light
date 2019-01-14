@@ -3,15 +3,15 @@ export default deck = () => {
   const suits = ['Hearts', 'Diamonds', 'Spades', 'Clubs'];
   let cards = [];
 
-  for(let s = 0; s < suits.length; s++ ) {
-    for(let n = 0; n < names.length; n++ ) {
+  suits.forEach((suit) => {
+    names.forEach((name, i) => {
       cards.push({
-        value: n + 1,
-        name: names[n],
-        suit: suits[s]
+        value: i + 1,
+        name,
+        suit,
       });
-    }
-  }
+    })
+  });
 
   return cards;
 }
